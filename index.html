@@ -1,544 +1,502 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CrazyZone - Донат</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    html {
-      scroll-behavior: smooth;
-    }
-    body {
-      overflow: auto;
-      min-height: 100vh;
-      position: relative;
-    }
-    @keyframes gradientShift {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
-    .animated-gradient {
-      background: linear-gradient(270deg, #0a0a23, #1a1a40, #2a2a60, #0a0a23);
-      background-size: 600% 600%;
-      animation: gradientShift 12s ease infinite;
-      position: relative;
-      overflow: visible;
-    }
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeIn 1.5s forwards;
-    }
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    .button-glow {
-      background: linear-gradient(to right, #1e3a8a, #3b82f6, #1e3a8a);
-      background-size: 200% 200%;
-      animation: gradientShift 6s ease infinite;
-      transition: all 0.3s ease;
-    }
-    .button-glow:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.7);
-    }
-    .card {
-      background: linear-gradient(to bottom right, #000000, #0a1a3c);
-      border-radius: 1.2rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.7);
-      transition: transform 0.4s, box-shadow 0.4s;
-      padding: 1.2rem;
-    }
-    .card:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 6px 30px rgba(0,0,255,0.4);
-    }
-    .price, .donate-name {
-      background: linear-gradient(to right, #1e3a8a, #3b82f6, #1e3a8a);
-      background-size: 200% 200%;
-      animation: gradientShift 6s ease infinite;
-      -webkit-background-clip: text;
-      color: transparent;
-      font-weight: bold;
-      text-shadow: 0 0 5px rgba(59, 130, 246, 0.8);
-    }
-    .donate-name {
-      font-size: 1.5rem;
-    }
-    .price {
-      font-size: 1.1rem;
-    }
-    .card ul {
-      font-size: 0.85rem;
-      margin-bottom: 1rem;
-    }
-    .contact-section {
-      background: linear-gradient(to bottom right, #000000, #0a1a3c);
-      padding: 40px 0;
-      border-top: 2px solid #3b82f6;
-    }
-    .contact-section h2 {
-      font-size: 2rem;
-      color: #ffffff;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .contact-links a {
-      display: inline-block;
-      color: #ffffff;
-      padding: 10px;
-      margin: 5px;
-      border-radius: 50%;
-      font-size: 2rem;
-    }
-    .server-info {
-      background: rgba(10, 26, 60, 0.9);
-      border-radius: 0.8rem;
-      padding: 0.6rem 1rem;
-      margin: 1.5rem auto;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.8rem;
-      border: 1px solid rgba(59, 130, 246, 0.5);
-      max-width: 85%;
-      flex-wrap: wrap;
-      justify-content: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-    }
-    .server-info:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-    }
-    .server-info-item {
-      margin: 0.3rem;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.85rem;
-      color: #e5e7eb;
-    }
-    .online-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #10b981;
-      margin-right: 5px;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
-    .search-container {
-      max-width: 500px;
-      margin: 0 auto 2rem;
-      position: relative;
-    }
-    .search-input {
-      width: 100%;
-      padding: 0.8rem 1rem 0.8rem 2.5rem;
-      border-radius: 0.8rem;
-      border: 1px solid rgba(59, 130, 246, 0.5);
-      background: rgba(10, 26, 60, 0.9);
-      color: #ffffff;
-      font-size: 1rem;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-    .search-input:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-    }
-    .search-icon {
-      position: absolute;
-      left: 0.8rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #3b82f6;
-      font-size: 1.2rem;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-content {
-      background: linear-gradient(to bottom right, #0a1a3c, #000000);
-      border-radius: 1rem;
-      padding: 2rem;
-      max-width: 600px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      border: 1px solid rgba(59, 130, 246, 0.5);
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-      color: #ffffff;
-    }
-    .modal-content h2 {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-      color: #3b82f6;
-    }
-    .modal-content h3 {
-      font-size: 1.2rem;
-      color: #3b82f6;
-      margin-top: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .modal-content p, .modal-content li {
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
-      color: #e5e7eb;
-    }
-    .modal-content ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    .modal-content .button-glow {
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 0.8rem;
-      font-size: 1rem;
-      margin-top: 1.5rem;
-    }
-    .close-modal {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      font-size: 1.5rem;
-      color: #e5e7eb;
-      cursor: pointer;
-    }
-    .product-name {
-      color: #3b82f6;
-      font-weight: bold;
-    }
-    .agreement-toggle {
-      background: linear-gradient(to right, #1e3a8a, #3b82f6, #1e3a8a);
-      background-size: 200% 200%;
-      animation: gradientShift 6s ease infinite;
-      color: #ffffff;
-      cursor: pointer;
-      font-size: 0.9rem;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      margin-bottom: 1rem;
-      display: inline-block;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-    .agreement-toggle:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
-    }
-    burral-content {
-      display: none;
-    }
-    .agreement-content.active {
-      display: block;
-    }
-  </style>
-</head>
-
-<body class="animated-gradient text-white font-sans">
-  <section class="flex flex-col items-center justify-center min-h-screen text-center px-4">
-    <h1 class="text-6xl font-extrabold mb-8 text-blue-400 drop-shadow-lg fade-in">CrazyZone</h1>
-  </section>
-
-  <section class="flex justify-center mb-12">
-    <a href="#shop" class="button-glow px-8 py-4 rounded-full text-lg font-bold uppercase fade-in">Перейти к товарам</a>
-  </section>
-
-  <section id="shop" class="max-w-7xl mx-auto p-8">
-    <h2 class="text-4xl font-bold text-center mb-12 text-blue-300">Донат-привилегии</h2>
-
-    <div class="flex justify-center w-full mb-8">
-      <div class="server-info fade-in">
-        <div class="server-info-item">
-          <span class="online-dot"></span>
-          <span class="font-bold">Статус сервера:</span>
-          <span id="server-status" class="text-green-400">Загрузка...</span>
-        </div>
-        <div class="server-info-item">
-          <span class="font-bold">Онлайн:</span>
-          <span id="online-count" class="text-blue-300">0</span>
-          <span>/</span>
-          <span id="max-players" class="text-blue-300">0</span>
-        </div>
-        <div class="server-info-item">
-          <span class="font-bold">IP:</span>
-          <span class="text-blue-300">pulsar.minerent.net</span>
-          <span class="mx-2">|</span>
-          <span class="font-bold">Порт:</span>
-          <span class="text-blue-300">19132</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="search-container fade-in">
-      <i class="fas fa-search search-icon"></i>
-      <input type="text" id="search-input" class="search-input" placeholder="Поиск товаров...">
-    </div>
-
-    <div id="shop-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">Император</h3>
-        <p class="price text-xl mb-6">1079₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>/kit Император, /salary</li>
-          <li>/ban, /mute</li>
-          <li>10 домов, 10 регионов</li>
-          <li>15 слотов на аукционе</li>
-          <li>0 сек телепорта</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="Император">Купить</button>
-      </div>
-
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">Цезарь</h3>
-        <p class="price text-xl mb-6">639₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>/kit Цезарь, /repair all</li>
-          <li>/flyspeed</li>
-          <li>9 домов, 9 регионов</li>
-          <li>13 слотов на аукционе</li>
-          <li>1 сек телепорта</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="Цезарь">Купить</button>
-      </div>
-
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">Князь</h3>
-        <p class="price text-xl mb-6">559₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>/kit Князь, /fly</li>
-          <li>Доступ к наковальне, кузнице</li>
-          <li>8 домов, 8 регионов</li>
-          <li>12 слотов на аукционе</li>
-          <li>2 сек телепорта</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="Князь">Купить</button>
-      </div>
-
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">Принц</h3>
-        <p class="price text-xl mb-6">353₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>/kit Принц, /msgtoggle, /tptoggle</li>
-          <li>/ptime, /pweather</li>
-          <li>7 домов, 7 регионов</li>
-          <li>11 слотов на аукционе</li>
-          <li>3 сек телепорта</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="Принц">Купить</button>
-      </div>
-
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">Легенда</h3>
-        <p class="price text-xl mb-6">199₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>/kit Легенда, /back, /nv</li>
-          <li>/itemname, /eext, /loom</li>
-          <li>6 домов, 6 регионов</li>
-          <li>10 слотов на аукционе</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="Легенда">Купить</button>
-      </div>
-
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">Рыцарь</h3>
-        <p class="price text-xl mb-6">59₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>/kit Рыцарь, /heal, /ec</li>
-          <li>/wbench</li>
-          <li>5 домов, 5 регионов</li>
-          <li>9 слотов на аукционе</li>
-          <li>5 сек телепорта</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="Рыцарь">Купить</button>
-      </div>
-
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">Герой</h3>
-        <p class="price text-xl mb-6">48₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>/kit Герой, /clear, /feed</li>
-          <li>4 домов, 4 региона</li>
-          <li>7 слотов на аукционе</li>
-          <li>6 сек телепорта</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="Герой">Купить</button>
-      </div>
-
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">Воин</h3>
-        <p class="price text-xl mb-6">19₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>/kit Воин, /salary, /suicide</li>
-          <li>3 домов, 3 региона</li>
-          <li>6 слотов на аукционе</li>
-          <li>7 сек телепорта</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="Воин">Купить</button>
-      </div>
-    </div>
-
-    <!-- Новый блок товаров -->
-    <h2 class="text-4xl font-bold text-center mb-12 text-blue-300 mt-16">Дополнительные товары</h2>
-    <div id="extra-shop-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">Разбан</h3>
-        <p class="price text-xl mb-6">149₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>Снятие бана с аккаунта</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="Разбан">Купить</button>
-      </div>
-
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">Размут</h3>
-        <p class="price text-xl mb-6">49₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>Снятие мута с аккаунта</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="Размут">Купить</button>
-      </div>
-
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">150,000 Рубинов</h3>
-        <p class="price text-xl mb-6">200₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>150,000 рубинов на ваш аккаунт</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="150,000 Рубинов">Купить</button>
-      </div>
-
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">320,000 Рубинов</h3>
-        <p class="price text-xl mb-6">400₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>320,000 рубинов на ваш аккаунт</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="320,000 Рубинов">Купить</button>
-      </div>
-
-      <div class="card p-6 flex flex-col justify-between">
-        <h3 class="donate-name text-2xl font-bold mb-4">800,000 Рубинов</h3>
-        <p class="price text-xl mb-6">1200₽</p>
-        <ul class="mb-6 space-y-2 text-blue-100 text-sm">
-          <li>800,000 рубинов на ваш аккаунт</li>
-        </ul>
-        <button class="button-glow px-6 py-3 rounded-lg buy-button" data-product="800,000 Рубинов">Купить</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Модальное окно -->
-  <div id="buy-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-modal">×</span>
-      <h2>Оформление покупки</h2>
-      <p>1. Напишите ваш никнейм на сервере чётко и корректно (пример: my_nickname)</p>
-      <p>2. Напишите название товара, который вы желаете приобрести: <span class="product-name" id="product-name"></span></p>
-      <p>3. Оплатите товар</p>
-      <p class="agreement-toggle" id="agreement-toggle">Пользовательское соглашение</p>
-      <div class="agreement-content" id="agreement-content">
-        <p>Данное соглашение регулирует условия использования донат-платформы на сервере Minecraft Bedrock Edition. Пожалуйста, внимательно ознакомьтесь с условиями ниже перед совершением покупки.</p>
-        
-        <h3>1. Покупка и возврат средств</h3>
-        <ul>
-          <li>Все покупки на платформе являются окончательными. Возврат средств возможен только в случае технической ошибки со стороны сервера.</li>
-          <li>Платежи за донат-товары, привилегии или другие товары не подлежат возврату, если только сервер не имеет технических проблем, которые делают невозможным использование купленных товаров.</li>
-        </ul>
-
-        <h3>2. Использование донат-привилегий</h3>
-        <ul>
-          <li>После покупки привилегий, таких как доступ к командам, предметам, регионам и другим функциям, они будут активированы на вашем аккаунте на сервере.</li>
-          <li>Администрация сервера оставляет за собой право изменить или удалить привилегии, если они нарушают правила сервера или являются причиной технических проблем.</li>
-        </ul>
-
-        <h3>3. Запрещенные действия</h3>
-        <ul>
-          <li>Пользователи не могут использовать купленные привилегии для нарушения правил сервера или других пользователей.</li>
-          <li>Запрещено использовать привилегии для эксплуатации уязвимостей в серверных системах.</li>
-        </ul>
-
-        <h3>4. Ответственность</h3>
-        <ul>
-          <li>Администрация сервера не несет ответственности за любые повреждения, потерю данных или доступ к серверу, которые могут произойти в результате использования привилегий.</li>
-          <li>Пользователь несет ответственность за сохранность своих данных и безопасность аккаунта.</li>
-        <ul>
-
-        <h3>5. Изменение условий</h3>
-        <ul>
-          <li>Администрация сервера имеет право в любой момент изменить условия данного соглашения, и пользователи обязаны следить за изменениями.</li>
-          <li>Все изменения вступают в силу с момента их публикации на сайте.</li>
-        </ul>
-
-        <h3>6. Конфиденциальность</h3>
-        <ul>
-          <li>Личная информация пользователей, предоставленная при покупке, будет храниться и использоваться исключительно в рамках работы платформы и для предоставления услуг.</li>
-        </ul>
-
-        <h3>7. Подтверждение согласия</h3>
-        <ul>
-          <li>Совершая покупку, пользователь подтверждает, что он ознакомлен с данным соглашением и согласен с его условиями.</li>
-        </ul>
-      </div>
-      <a href="https://t.me/ABSOLNT" target="_blank" class="button-glow">Перейти к покупке</a>
-    </div>
-  </div>
-
-  <section class="contact-section">
-    <h2>Контакты</h2>
-    <div class="contact-links text-center">
-      <a href="https://t.me/CrazyZonePE" target="_blank" class="text-white p-4 rounded-full"><i class="fab fa-telegram"></i></a>
-      <a href="https://www.tiktok.com/@absolnt?_t=ZM-8vstjAGMU3r&_r=1" target="_blank" class="text-white p-4 rounded-full"><i class="fab fa-tiktok"></i></a>
-      <a href="https://t.me/ABSOLNT" target="_blank" class="text-white p-4 rounded-full"><i class="fas fa-envelope"></i></a>
-    </div>
-  </section>
-
-  <footer class="text-center mt-16 p-6 text-blue-400">
-    © 2025 CrazyZone. Все права защищены.
-  </footer>
-
-  <script>
-    async function fetchServerStatus() {
-      try {
-        const response = await fetch(`https://api.mcsrvstat.us/bedrock/2/pulsar.minerent.net:19132`);
-        const data = await response.json();
-        if (data.online) {
-          document.getElementById('server-status').textContent = 'Онлайн';
-          document.getElementById('online-count').textContent = data.players.online;
-          document.getElementById('max-players').textContent = data.players.max;
-        } else {
-          document.getElementById('server-status').textContent = 'Оффлайн';
-          document.getElementById('server-status').className = 'text-red-400';
-          document.querySelector('.online-dot').style.backgroundColor = '#ef4444';
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrazyZone - Донаты</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #ffffff;
+            background: linear-gradient(135deg, #000000, #0a1f3a, #000000, #0a1f3a);
+            background-size: 400%;
+            animation: gradientBG 12s ease infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-      } catch (error) {
-        console.error('Ошибка при получении данных сервера:', error);
-        document.getElementById('server-status').textContent = 'Ошибка загрузки';
-        document.getElementById('server-status').className = 'text-yellow-400';
-      }
-    }
-  
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards 0.5s;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1565c0;
+            text-transform: uppercase;
+        }
+
+        .search-bar {
+            width: 350px;
+            margin-left: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #0a1f3a;
+            color: #ffffff;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #1565c0;
+            box-shadow: 0 0 10px rgba(21, 101, 192, 0.5);
+        }
+
+        .container {
+            padding-top: 100px;
+            text-align: center;
+            width: 100%;
+            opacity: 0;
+            animation: fadeInShop 1s ease forwards 0.3s;
+        }
+
+        @keyframes fadeInShop {
+            to { opacity: 1; }
+        }
+
+        .intro-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: fadeScaleIn 1.5s ease forwards;
+        }
+
+        @keyframes fadeScaleIn {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .intro-screen h1 {
+            font-size: 80px;
+            color: #1565c0;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            margin-bottom: 30px;
+        }
+
+        .intro-button {
+            background: #0a1f3a;
+            color: #ffffff;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .intro-button:hover {
+            background: #1565c0;
+            transform: scale(1.1);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1.1); }
+        }
+
+        .server-info h1 {
+            font-size: 50px;
+            color: #1565c0;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            margin-bottom: 20px;
+        }
+
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .product-card {
+            background: rgba(18, 18, 18, 0.8);
+            border: 2px solid #0a1f3a;
+            border-radius: 15px;
+            width: 260px;
+            padding: 20px;
+            text-align: left;
+            opacity: 0;
+            transform: translateY(50px) rotate(2deg);
+            animation: slideRotateIn 0.6s ease forwards;
+            animation-delay: calc(0.1s * var(--index));
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes slideRotateIn {
+            to { opacity: 1; transform: translateY(0) rotate(0); }
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 20px rgba(10, 31, 58, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card h3 {
+            color: #1565c0;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .product-card p {
+            font-size: 14px;
+            margin: 5px 0;
+            color: #90a4ae;
+        }
+
+        .buy-button {
+            background: #0a1f3a;
+            color: #ffffff;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 15px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .buy-button:hover {
+            background: #1565c0;
+            transform: scale(1.05);
+            animation: pulse 1s infinite;
+        }
+
+        .other-section h2 {
+            color: #1565c0;
+            margin: 30px 0;
+            font-size: 28px;
+        }
+
+        .modal-content {
+            background: #121212;
+            color: #ffffff;
+            border: 2px solid #0a1f3a;
+            border-radius: 15px;
+            animation: fadeBounceIn 0.4s ease;
+        }
+
+        @keyframes fadeBounceIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            70% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header, .modal-footer {
+            border-color: #0a1f3a;
+        }
+
+        .modal-title {
+            color: #1565c0;
+        }
+
+        .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .buy-button.modal-button {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 30px;
+        }
+
+        .agreement-text {
+            margin-top: 20px;
+        }
+
+        .agreement-text h5, .agreement-text h6 {
+            color: #1565c0;
+            margin-top: 15px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #ffffff;
+            font-size: 14px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar hidden" id="navbar">
+        <div class="logo">CZ</div>
+        <input type="text" class="form-control search-bar" id="searchBar" placeholder="Поиск товаров...">
+    </nav>
+
+    <div class="intro-screen" id="introScreen">
+        <h1>CrazyZone</h1>
+        <button class="intro-button" onclick="showShop()">Перейти к товарам</button>
+    </div>
+
+    <div class="container hidden" id="shopContainer">
+        <div class="server-info">
+            <h1>CrazyZone</h1>
+        </div>
+
+        <h2>Список товаров</h2>
+        <div class="product-grid" id="productGrid">
+            <!-- Император -->
+            <div class="product-card" data-name="Император" style="--index: 1;">
+                <h3>Император - 1079₽</h3>
+                <p>Получить набор Императора /kit Император</p>
+                <p>Получить зарплату Император /salary</p>
+                <p>/ban [ник] [время] [причина]</p>
+                <p>/mute [ник] [время] [причина]</p>
+                <p>Точек домов: 10</p>
+                <p>Блоков региона: 10</p>
+                <p>Слотов на аукционе: 15</p>
+                <p>Задержка телепорта: 0 сек</p>
+                <button class="buy-button" onclick="openBuyModal()">Купить</button>
+            </div>
+            <!-- Цезарь -->
+            <div class="product-card" data-name="Цезарь" style="--index: 2;">
+                <h3>Цезарь - 639₽</h3>
+                <p>Получить набор Цезаря /kit Цезарь</p>
+                <p>Починить весь инвентарь /repair all</p>
+                <p>Установить скорость передвижения /flyspeed</p>
+                <p>Точек домов: 9</p>
+                <p>Блоков региона: 9</p>
+                <p>Слотов на аукционе: 13</p>
+                <p>Задержка телепорта: 1 сек</p>
+                <button class="buy-button" onclick="openBuyModal()">Купить</button>
+            </div>
+            <!-- Князь -->
+            <div class="product-card" data-name="Князь" style="--index: 3;">
+                <h3>Князь - 559₽</h3>
+                <p>Получить набор Князя /kit Князь</p>
+                <p>Включить режим полёта /fly</p>
+                <p>Открыть Наковальню /anvil</p>
+                <p>Открыть стол Кузнеца /smithingtable</p>
+                <p>Точек домов: 8</p>
+                <p>Блоков региона: 8</p>
+                <p>Слотов на аукционе: 12</p>
+                <p>Задержка телепорта: 2 сек</p>
+                <button class="buy-button" onclick="openBuyModal()">Купить</button>
+            </div>
+            <!-- Принц -->
+            <div class="product-card" data-name="Принц" style="--index: 4;">
+                <h3>Принц - 353₽</h3>
+                <p>Получить набор Принца /kit Принц</p>
+                <p>Отключить Личные сообщения /msgtoggle</p>
+                <p>Установить время для себя /ptime</p>
+                <p>Точек домов: 7</p>
+                <p>Блоков региона: 7</p>
+                <p>Слотов на аукционе: 11</p>
+                <p>Задержка телепорта: 3 сек</p>
+                <button class="buy-button" onclick="openBuyModal()">Купить</button>
+            </div>
+            <!-- Легенда -->
+            <div class="product-card" data-name="Легенда" style="--index: 5;">
+                <h3>Легенда - 199₽</h3>
+                <p>Получить набор Легенды /kit Легенда</p>
+                <p>Телепортироваться на точку смерти /back</p>
+                <p>Включить ночное зрение /nv</p>
+                <p>Точек домов: 6</p>
+                <p>Блоков региона: 6</p>
+                <p>Слотов на аукционе: 10</p>
+                <button class="buy-button" onclick="openBuyModal()">Купить</button>
+            </div>
+            <!-- Рыцарь -->
+            <div class="product-card" data-name="Рыцарь" style="--index: 6;">
+                <h3>Рыцарь - 59₽</h3>
+                <p>Получить набор Рыцаря /kit Рыцарь</p>
+                <p>Вылечить себя /heal</p>
+                <p>Открыть Эндер Сундук /ec</p>
+                <p>Точек домов: 5</p>
+                <p>Блоков региона: 5</p>
+                <p>Слотов на аукционе: 9</p>
+                <p>Задержка телепорта: 5 сек</p>
+                <button class="buy-button" onclick="openBuyModal()">Купить</button>
+            </div>
+            <!-- Герой -->
+            <div class="product-card" data-name="Герой" style="--index: 7;">
+                <h3>Герой - 48₽</h3>
+                <p>Получить набор Героя /kit Герой</p>
+                <p>Очистить инвентарь /clear</p>
+                <p>Покормить себя /feed</p>
+                <p>Точек домов: 4</p>
+                <p>Блоков региона: 4</p>
+                <p>Слотов на аукционе: 7</p>
+                <p>Задержка телепорта: 6 сек</p>
+                <button class="buy-button" onclick="openBuyModal()">Купить</button>
+            </div>
+            <!-- Воин -->
+            <div class="product-card" data-name="Воин" style="--index: 8;">
+                <h3>Воин - 19₽</h3>
+                <p>Получить набор Воина /kit Воин</p>
+                <p>Получить зарплату /salary</p>
+                <p>Покончить жизнь самоубийством /suicide</p>
+                <p>Точек домов: 3</p>
+                <p>Блоков региона: 3</p>
+                <p>Слотов на аукционе: 6</p>
+                <p>Задержка телепорта: 7 сек</p>
+                <button class="buy-button" onclick="openBuyModal()">Купить</button>
+            </div>
+        </div>
+
+        <div class="other-section">
+            <h2>Другое</h2>
+            <div class="product-grid">
+                <div class="product-card" data-name="Разбан" style="--index: 9;">
+                    <h3>Разбан - 89₽</h3>
+                    <button class="buy-button" onclick="openBuyModal()">Купить</button>
+                </div>
+                <div class="product-card" data-name="Размут" style="--index: 10;">
+                    <h3>Размут - 49₽</h3>
+                    <button class="buy-button" onclick="openBuyModal()">Купить</button>
+                </div>
+                <div class="product-card" data-name="150,000 Рубинов" style="--index: 11;">
+                    <h3>150,000 Рубинов - 200₽</h3>
+                    <button class="buy-button" onclick="openBuyModal()">Купить</button>
+                </div>
+                <div class="product-card" data-name="320,000 Рубинов" style="--index: 12;">
+                    <h3>320,000 Рубинов - 400₽</h3>
+                    <button class="buy-button" onclick="openBuyModal()">Купить</button>
+                </div>
+                <div class="product-card" data-name="800,000 Рубинов" style="--index: 13;">
+                    <h3>800,000 Рубинов - 1200₽</h3>
+                    <button class="buy-button" onclick="openBuyModal()">Купить</button>
+                </div>
+                <div class="product-card" data-name="350 Рубинов" style="--index: 14;">
+                    <h3>350 Рубинов - 1₽</h3>
+                    <button class="buy-button" onclick="openBuyModal()">Купить</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            © 2023 CrazyZone. Все права защищены.
+        </footer>
+    </div>
+
+    <!-- Purchase Modal with Instructions and User Agreement -->
+    <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="buyModalLabel">Покупка товара</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>1. Напишите свой никнейм короткого и без ошибок пример: "My_Nickname"</p>
+                    <p>2. Напишите название выбранного вами товара</p>
+                    <p>3. Оплатите</p>
+                    <a href="https://t.me/ABSOLNT" target="_blank" class="btn buy-button modal-button">Перейти к оплате</a>
+                    <div class="agreement-text">
+                        <h5>Пользовательское соглашение</h5>
+                        <p>Данное соглашение регулирует условия использования донат-платформы на сервере Minecraft Bedrock Edition. Пожалуйста, внимательно ознакомьтесь с условиями ниже перед совершением покупки.</p>
+                        <h6>1. Покупка и возврат средств</h6>
+                        <p>Все покупки на платформе являются окончательными. Возврат средств возможен только в случае технической ошибки со стороны сервера.</p>
+                        <p>Платежи за донат-товары, привилегии или другие товары не подлежат возврату, если только сервер не имеет технических проблем, которые делают невозможным использование купленных товаров.</p>
+                        <h6>2. Использование донат-привилегий</h6>
+                        <p>После покупки привилегий, таких как доступ к командам, предметам, регионам и другим функциям, они будут активированы на вашем аккаунте на сервере.</p>
+                        <p>Администрация сервера оставляет за собой право изменить или удалить привилегии, если они нарушают правила сервера или являются причиной технических проблем.</p>
+                        <h6>3. Запрещенные действия</h6>
+                        <p>Пользователи не могут использовать купленные привилегии для нарушения правил сервера или других пользователей.</p>
+                        <p>Запрещено использовать привилегии для эксплуатации уязвимостей в серверных системах.</p>
+                        <h6>4. Ответственность</h6>
+                        <p>Администрация сервера не несет ответственности за любые повреждения, потерю данных или доступ к серверу, которые могут произойти в результате использования привилегий.</p>
+                        <p>Пользователь несет ответственность за сохранность своих данных и безопасность аккаунта.</p>
+                        <h6>5. Изменение условий</h6>
+                        <p>Администрация сервера имеет право в любой момент изменить условия данного соглашения, и пользователи обязаны следить за изменениями.</p>
+                        <p>Все изменения вступают в силу с момента их публикации на сайте.</p>
+                        <h6>6. Конфиденциальность</h6>
+                        <p>Личная информация пользователей, предоставленная при покупке, будет храниться и использоваться исключительно в рамках работы платформы и для предоставления услуг.</p>
+                        <h6>7. Подтверждение согласия</h6>
+                        <p>Совершая покупку, пользователь подтверждает, что он ознакомлен с данным соглашением и согласен с его условиями.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn buy-button" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Show Shop with error handling
+        function showShop() {
+            try {
+                const introScreen = document.getElementById('introScreen');
+                const navbar = document.getElementById('navbar');
+                const shopContainer = document.getElementById('shopContainer');
+
+                if (!introScreen || !navbar || !shopContainer) {
+                    console.error('One or more elements not found:', { introScreen, navbar, shopContainer });
+                    return;
+                }
+
+                introScreen.classList.add('hidden');
+                navbar.classList.remove('hidden');
+                shopContainer.classList.remove('hidden');
+            } catch (error) {
+                console.error('Error in showShop:', error);
+            }
+        }
+
+        // Open Buy Modal
+        function openBuyModal() {
+            try {
+                new bootstrap.Modal(document.getElementById('buyModal')).show();
+            } catch (error) {
+                console.error('Error opening buy modal:', error);
+            }
+        }
+
+        // Search Functionality
+        document.getElementById('searchBar').addEventListener('input', function(e) {
+            try {
+                const searchTerm = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.product-card');
+                cards.forEach(card => {
+                    const name = card.getAttribute('data-name').toLowerCase();
+                    card.style.display = name.includes(searchTerm) ? 'block' : 'none';
+                });
+            } catch (error) {
+                console.error('Error in search:', error);
+            }
+        });
+
+        // Ensure DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded');
+            // Fallback click listener
+            const introButton = document.querySelector('.intro-button');
+            if (introButton) {
+                introButton.addEventListener('click', showShop);
+            }
+        });
+    </script>
+</body>
+</html>
